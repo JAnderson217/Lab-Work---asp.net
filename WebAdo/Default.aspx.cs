@@ -16,11 +16,11 @@ namespace WebAdo
         {
             if (!IsPostBack)
             {
-                Response.Write("<center><h1>Read data from a database </ h1 ></ center >< hr /> ");
+                Response.Write("<center><h1>Read data from a database </h1></center>");
                 Response.Write("<br/>");
                 string s = ConfigurationManager.ConnectionStrings["MyDB"].ConnectionString;
                 SqlConnection con = new SqlConnection(s);
-                string sqlString = "select * from customers";
+                string sqlString = "select * from students";
                 SqlCommand cmd = new SqlCommand(sqlString, con);
                 con.Open();
                 SqlDataReader dr = cmd.ExecuteReader();
@@ -42,8 +42,6 @@ namespace WebAdo
         }
         protected void Button1_Click(object sender, EventArgs e)
         {
-            Response.Write("<center><h1>Read data from a database</h1></center><hr/>");
-            Response.Write("<br/>");
             String txtValue = TextBox1.Text;
             //read connection string
             string s = ConfigurationManager.ConnectionStrings["MyDB"].ConnectionString;
@@ -88,6 +86,75 @@ namespace WebAdo
                 dr.Close();
                 con.Close();
             }
+        }
+
+        protected void Button2_Click(object sender, EventArgs e)
+        {
+            //on button click, deletes records with ID of textbox value
+            String txtValue = TextBox1.Text;
+            string s = ConfigurationManager.ConnectionStrings["MyDB"].ConnectionString;
+            SqlConnection con = new SqlConnection(s);
+            string query = "DELETE FROM students WHERE ID=@ID";
+            SqlCommand cmd = new SqlCommand(query, con);
+            cmd.Parameters.AddWithValue("@ID", txtValue);
+            con.Open();
+            cmd.ExecuteNonQuery();
+            con.Close();
+            reloadDB();
+        }
+
+        protected void Button4_Click(object sender, EventArgs e)
+        {
+            //Adds a record to students, with next ID val, and random grade
+            Random random = new Random();
+            int grade = random.Next(1, 100);
+            int ID = 0;
+            String txtValue = TextBox1.Text;
+            string s = ConfigurationManager.ConnectionStrings["MyDB"].ConnectionString;
+            SqlConnection con = new SqlConnection(s);
+            con.Open();
+            string query = "SELECT COUNT(*) FROM Students";
+            SqlCommand cmd = new SqlCommand(query, con);
+            ID = (int)cmd.ExecuteScalar()+1;
+            query = "INSERT INTO students (ID, Name, Grade) VALUES(@a,@b,@c);";
+            cmd.CommandText = query;
+            cmd.Parameters.Add("@a", ID);
+            cmd.Parameters.Add("@b", txtValue);
+            cmd.Parameters.Add("@c", grade);
+            cmd.ExecuteScalar();
+            con.Close();
+            reloadDB();
+        }
+
+        protected void Button3_Click(object sender, EventArgs e)
+        {
+            //updates record to student, by selecting ID, gives random grade
+            Random random = new Random();
+            int grade = random.Next(1, 100);
+            String txtValue = TextBox1.Text;
+            string s = ConfigurationManager.ConnectionStrings["MyDB"].ConnectionString;
+            SqlConnection con = new SqlConnection(s);
+            string query = "UPDATE students SET Grade=@Grade WHERE ID=@ID";
+            SqlCommand cmd = new SqlCommand(query, con);
+            cmd.Parameters.Add("@Grade", grade);
+            cmd.Parameters.Add("@ID", txtValue);
+            con.Open();
+            cmd.ExecuteNonQuery();
+            con.Close();
+            reloadDB();
+        }
+        public void reloadDB()
+        {
+            string s = ConfigurationManager.ConnectionStrings["MyDB"].ConnectionString;
+            SqlConnection con = new SqlConnection(s);
+            string sqlString = "select * from students";
+            SqlCommand cmd = new SqlCommand(sqlString, con);
+            con.Open();
+            SqlDataReader dr = cmd.ExecuteReader();
+            GridView1.DataSource = dr;
+            GridView1.DataBind();
+            dr.Close();
+            con.Close();
         }
     }
 }

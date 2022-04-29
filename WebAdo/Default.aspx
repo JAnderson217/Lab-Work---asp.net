@@ -10,10 +10,13 @@
     <form id="form1" runat="server">
         <div>
             <asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
-            <asp:Button ID="Button1" runat="server" Text="Button" OnClick="Button1_Click"/>
+            <asp:Button ID="Button1" runat="server" Text="Load Selected" OnClick="Button1_Click"/>
             <asp:DropDownList ID="DropDownList1" runat="server" OnSelectedIndexChanged="DropDownList1_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
-            <asp:GridView ID="GridView1" runat="server"></asp:GridView>
         </div>
+            <asp:GridView ID="GridView1" runat="server"></asp:GridView>
+        <asp:Button ID="Button2" runat="server" OnClick="Button2_Click" Text="Delete Record" />
+        <asp:Button ID="Button3" runat="server" OnClick="Button3_Click" Text="Update Record" />
+        <asp:Button ID="Button4" runat="server" OnClick="Button4_Click" Text="Create Record" />
     </form>
 </body>
 </html>
